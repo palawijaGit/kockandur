@@ -4,9 +4,12 @@
 #include <QRegExp>
 #include <QFile>
 #include <QString>
+#include <QTextStream>
+#include "sgf_tree.h"
 
 class Parser {
     public:
+        SgfTree parseFile(QString & filename);
     private:
 };
 
