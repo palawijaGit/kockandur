@@ -1,0 +1,5 @@
+PROJECT(DEEPWHITE) 
+cmake_minimum_required(VERSION 2.4.0)
+find_package(Qt4)
+SET(DEEPWHITE_SRCS deepwhite_main.cpp)
+ADD_EXECUTABLE(dwhite ${DEEPWHITE_SRCS})
