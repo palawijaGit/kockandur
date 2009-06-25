@@ -1,10 +1,15 @@
 #include <iostream>
+#include <QApplication>
 #include "sgf_parser/parser_main.h"
+#include "mainwindow.h"
 
 int main(int argc, char * argv[]) {
+    QApplication app(argc, argv);
     Parser parser;
+    GobanWindow gw;
+    gw.show();
     QString infile(argv[1]);
     parser.parseFile(infile);
     std::cout << "Próba \n";
-    return 0;    
+    return app.exec();
 }
