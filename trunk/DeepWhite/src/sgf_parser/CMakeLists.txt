@@ -1,0 +1,1 @@
+SET(DEEPWHITE_PARSER_SRCS parser_main.cpp)
