@@ -11,7 +11,7 @@ SgfTree Parser::parseFile(QString & infile) {
               std::cout << line.toStdString() << std::endl;
         }
     } else {
-        // throw Exception("Unable to read file");
+        // throw exception("Unable to read file");
     }
 }
 
