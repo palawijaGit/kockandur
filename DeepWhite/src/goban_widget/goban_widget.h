@@ -5,8 +5,9 @@
 
 class Goban : public QWidget {
     public:
-        void something()
+        void something();
     private:
-}
+        int som;
+};
 
 #endif // GOBAN_WIDGET_H

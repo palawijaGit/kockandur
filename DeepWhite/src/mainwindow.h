@@ -2,15 +2,26 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QAction>
+#include <QMenuBar>
 
 class GobanWindow : public QMainWindow {
 
-        Q_OBJECT
+
+    private:
+
+         QMenu      * fileMenu;
+         QMenu      * aboutMenu;
+         QAction    * newAction;
+         QAction    * openAction;
 
     public:
 
-        int valami;
         GobanWindow();
+        ~GobanWindow();
+        void createMenus();
+        void createActions();
+
 };
 
 #endif // MAINWINDOW_H
