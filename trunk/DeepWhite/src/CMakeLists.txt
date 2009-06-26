@@ -11,6 +11,6 @@ SET(DEEPWHITE_SRCS deepwhite_main.cpp
                    sgf_parser/sgf_tree.cpp)
 SET(DEEPWHITE_HDRS mainwindow.h)
 INCLUDE(${QT_USE_FILE})
-QT4_AUTOMOC( ${DEEPWHITE_SRCS} ${DEEPWHITE_HDRS})
+qt4_wrap_cpp( ${DEEPWHITE_SRCS})
 ADD_EXECUTABLE(dwhite ${DEEPWHITE_SRCS})
 TARGET_LINK_LIBRARIES(dwhite ${QT_LIBRARIES} )
