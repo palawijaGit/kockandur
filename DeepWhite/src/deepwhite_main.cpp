@@ -8,9 +8,10 @@ int main(int argc, char * argv[]) {
     Parser parser;
     GobanWindow * gw = new GobanWindow;
     gw->show();
-    QString infile(argv[1]);
-    parser.parseFile(infile);
-    std::cout << "Próba \n";
+    if (argc > 1) {
+        QString infile(argv[1]);
+        parser.parseFile(infile);
+    }
     return app.exec();
 
 }

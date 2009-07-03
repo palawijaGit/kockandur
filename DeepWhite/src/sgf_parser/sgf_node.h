@@ -2,12 +2,13 @@
 #define SGF_NODE_H
 #include <QString>
 #include <QList>
+#include "sgf_property.h"
 
 class SgfNode {
     private:
-        QString * comments;
-        SgfNode * parent;
-        QList<SgfNode*> childs;
+        QList<SgfProperty*> properties;
+        SgfNode          *  parent;
+        QList<SgfNode*>     childs;
     public:
 
 };
