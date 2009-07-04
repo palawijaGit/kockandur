@@ -10,7 +10,9 @@ int main(int argc, char * argv[]) {
     gw->show();
     if (argc > 1) {
         QString infile(argv[1]);
-        parser.parseFile(infile);
+        SgfCollection * collection;
+        collection = parser.parseFile(infile);
+        delete collection;
     }
     return app.exec();
 
