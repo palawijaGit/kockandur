@@ -3,7 +3,9 @@
 #include <exception>
 
 QString ParseTokken(QTextStream &in) {
+    static QChar last;
     QChar c;
+    QString sum;
     in >> c;
     switch (c.toAscii()) {
         case '(':
@@ -12,7 +14,7 @@ QString ParseTokken(QTextStream &in) {
         case '[':
         case ']':
         case '\\': return c;
-    }
+    }    
     return "";
 }
 
@@ -40,42 +42,58 @@ bool Parser::isNumber(const QString & value) const {
     return true;
 }
 
-bool Parser::isReal(const QString &value) const {
+bool Parser::isRealStrict(const QString &value) const {
     if (isNumber(value)) return true;               // We accept integers as floats
     int dot_pos = value.indexOf('.');
     if (dot_pos <= 0) return false;                 // Its not a number and the problem was not the dot, or only starts with a dot
                                                     // A number required before the dot
-    if ((dot_pos + 1) == value.length) return false; // Dot is the last char (A digit required if there was a dot)
-    for (int i = dot_pos; i < value.length(); i++)
+    if ((dot_pos + 1) == value.length()) return false; // Dot is the last char (A digit required if there was a dot)
+    for (int i = dot_pos+1; i < value.length(); i++)
         if (!isDigit(value.data()[i])) return false; // The end is not
+    return true;
 }
 
+bool Parser::isColor(QChar c) const {
+     return (c == 'B' || c == 'W');
+}
 
-SgfTree Parser::parseFile(QString & infile) {
+bool Parser::isDouble(QChar c) const {
+     return (c == '1' || c == '2');
+}
+
+void Parser::parseCollection(QTextStream & in) {
+    // while(!in.atEnd())
+    //     parseGameTree(in);
+}
+
+void Parser::parseGameTree(QTextStream & in, SgfTree & tree) {
+    QChar c;
+    in >> c;
+    // if (c == '(') c = parseSequence(in, tree);
+
+}
+
+void Parser::parseSequence(QTextStream & in){
+}
+
+SgfCollection * Parser::parseFile(const QString & infile) {
     // QString some = ParseTokken(in);
-    std::cout << "C isUCLetter: " << isUCLetter('C') << std::endl;
-    std::cout << "c isUCLetter: " << isUCLetter('c') << std::endl;
-    std::cout << "1 isUCLetter: " << isUCLetter('1') << std::endl;
-    std::cout << "C isDigit: " << isDigit('C') << std::endl;
-    std::cout << "c isDigit: " << isDigit('c') << std::endl;
-    std::cout << "1 isDigit: " << isDigit('1') << std::endl;
-    std::cout << "1 isNumber: " << isNumber("1") << std::endl;
-    std::cout << "1121 isNumber: " << isNumber("1121") << std::endl;
-    std::cout << "+1 isNumber: " << isNumber("+1") << std::endl;
-    std::cout << "-1 isNumber: " << isNumber("-1") << std::endl;
-    std::cout << "SD isNumber: " << isNumber("SD") << std::endl;
-    std::cout << "123D isNumber: " << isNumber("123D") << std::endl;
-    std::cout << "+ isNumber: " << isNumber("+") << std::endl;
 
 
-    /* QFile game_file(infile);
+    QFile game_file(infile);
     if (game_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QTextStream in(&game_file);
-        while (!in.atEnd()) {
-
+        char c;
+        while (!game_file.atEnd()) {
+            game_file.getChar(&c);
+            std::cout << c;
+            game_file.ungetChar(c);
+            game_file.getChar(&c);
+            std::cout << c;
         }
+        std::cout << std::endl;
     } else {
-        // throw exception("Unable to read file");
-    }*/
+       //  throw exception("Unable to read file");
+    }
+    return new SgfCollection();
 }
 
