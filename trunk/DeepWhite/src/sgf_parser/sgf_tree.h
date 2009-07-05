@@ -8,6 +8,7 @@ class SgfTree {
       QList<SgfTree*> nodes;
     public:
       void setRoot(SgfSequence *);
+      void addNode(SgfTree *);
       SgfTree();
       ~SgfTree();
 };

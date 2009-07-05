@@ -89,7 +89,7 @@ SgfTree *  Parser::parseGameTree(QIODevice & in) {
            in.getChar(&c);
            SgfTree * temp;
            temp = parseGameTree();
-           nodes.append(temp);              // adding gametree to the tree
+           tree->addNode(temp);              // adding gametree to the tree
        }
     } catch ( ... ){
        delete tree;
@@ -100,11 +100,22 @@ SgfTree *  Parser::parseGameTree(QIODevice & in) {
 }
 
 SgfSequence * Parser::parseSequence(QIODevice & in){
-    SgfSequence * sequence = new Sequence;
+    SgfSequence * sequence = new Sequence();
     SgfNode * node;
-    while (node = parseNode(in)) {
-
+    try {        
+        while (node = parseNode(in)) {
+            sequence->addNode(node);
+        }
+    } catch (...) {
+        delete node;
+        delete sequence;
+        throw;
     }
+}
+
+SgfNode * Parser::parseNode(QIODevice & in) {
+    char c;
+    in.getChar(&c);
 }
 
 SgfCollection * Parser::parseFile(const QString & infile) {
