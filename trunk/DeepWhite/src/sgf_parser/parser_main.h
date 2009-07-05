@@ -11,6 +11,11 @@
 
 class Parser {
     public:
+
+        struct ParserException {
+            const char * er;
+            ParserException(const char * e) { er = e; }
+            };
         SgfCollection * parseFile(const QString&);
         bool isUCLetter(QChar) const;
         bool isDigit(QChar) const;
@@ -20,8 +25,9 @@ class Parser {
         bool isColor(const QChar) const;
         bool isRealStrict(const QString&) const;
         QString parseTokken(QTextStream &);
-        void parseCollection(QTextStream &);
-        void parseGameTree(QTextStream &, SgfTree & );
+        SgfCollection * parseCollection(QIODevice &);
+        SgfTree       * parseGameTree(QIODevice &);
+        SgfSequence   * parseSequence(QIODevice &);
         void parseSequence(QTextStream &);
     private:
 

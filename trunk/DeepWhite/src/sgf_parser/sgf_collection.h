@@ -6,8 +6,8 @@ class SgfCollection {
     private:
         QList<SgfTree*> collection;
     public:
-        // SgfCollection();
-        // ~SgfCollection();
+        SgfCollection();
+        ~SgfCollection();
         void addSgfTree(SgfTree * tree);
 };
 

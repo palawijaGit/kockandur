@@ -61,28 +61,47 @@ bool Parser::isDouble(QChar c) const {
      return (c == '1' || c == '2');
 }
 
-void Parser::parseCollection(QTextStream & in) {
-    // while(!in.atEnd())
-    //     parseGameTree(in);
+SgfCollection * Parser::parseCollection(QIODevice & in) {
+    SgfCollection * collection = new SgfCollection();
+    try {
+        while(!in.atEnd()) {
+            SgfTree * tree = parseGameTree(in);
+            if (tree) collection->addSgfTree(tree);
+        }
+    } catch ( ... ) {
+        delete collection; // cleanup if some error happened
+        throw;
+    }
+    return collection; // no collection returned
 }
 
-void Parser::parseGameTree(QTextStream & in, SgfTree & tree) {
-    QChar c;
-    in >> c;
-    // if (c == '(') c = parseSequence(in, tree);
+SgfTree *  Parser::parseGameTree(QIODevice & in) {
+    SgfTree * tree = new SgfTree();
+    char c;
+    in.getChar(&c);
 
+    try {               
+       if (c != '(') throw ParserException("'(' is expected but not present");
+       SgfSequence * sequence = parseSequence(in);
+       tree->setRoot(sequence);
+       while ()
+    } catch ( ... ){
+       delete tree;
+       delete sequence;
+       throw;
+    }
+    return tree;
 }
 
-void Parser::parseSequence(QTextStream & in){
+SgfSequence * Parser::parseSequence(QIODevice & in){
+
 }
 
 SgfCollection * Parser::parseFile(const QString & infile) {
-    // QString some = ParseTokken(in);
-
-
     QFile game_file(infile);
     if (game_file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        char c;
+        return parseCollection(game_file);
+        /* char c;
         while (!game_file.atEnd()) {
             game_file.getChar(&c);
             std::cout << c;
@@ -90,7 +109,7 @@ SgfCollection * Parser::parseFile(const QString & infile) {
             game_file.getChar(&c);
             std::cout << c;
         }
-        std::cout << std::endl;
+        std::cout << std::endl;*/
     } else {
        //  throw exception("Unable to read file");
     }

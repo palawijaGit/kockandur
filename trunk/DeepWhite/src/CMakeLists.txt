@@ -8,7 +8,10 @@ SET(DEEPWHITE_SRCS deepwhite_main.cpp
                    mainwindow.cpp
                    sgf_parser/parser_main.cpp
                    sgf_parser/sgf_node.cpp
-                   sgf_parser/sgf_tree.cpp)
+                   sgf_parser/sgf_tree.cpp
+		   sgf_parser/sgf_collection.cpp
+                   sgf_parser/sgf_sequence.cpp
+   )
 SET(DEEPWHITE_HDRS mainwindow.h)
 INCLUDE(${QT_USE_FILE})
 qt4_wrap_cpp( ${DEEPWHITE_SRCS})
