@@ -2,7 +2,11 @@
 
 inline void SgfTree::setRoot(SgfSequence * seq) {
           root = seq;
-      }
+    }
+
+inline void SgfTree::addNode(SgfTree * tree) {
+          nodes.append(tree);
+    }
 
 SgfTree::SgfTree() {}
 
