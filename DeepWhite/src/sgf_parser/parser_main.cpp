@@ -82,9 +82,15 @@ SgfTree *  Parser::parseGameTree(QIODevice & in) {
 
     try {               
        if (c != '(') throw ParserException("'(' is expected but not present");
-       SgfSequence * sequence = parseSequence(in);
+       SgfSequence * sequence = parseSequence(in); // parsing in sequences
        tree->setRoot(sequence);
-       while ()
+       in.getChar(&c);
+       while (c != ')') {                   // if we are not at the end of there is a game tree after the sequence
+           in.getChar(&c);
+           SgfTree * temp;
+           temp = parseGameTree();
+           nodes.append(temp);              // adding gametree to the tree
+       }
     } catch ( ... ){
        delete tree;
        delete sequence;
@@ -94,7 +100,11 @@ SgfTree *  Parser::parseGameTree(QIODevice & in) {
 }
 
 SgfSequence * Parser::parseSequence(QIODevice & in){
+    SgfSequence * sequence = new Sequence;
+    SgfNode * node;
+    while (node = parseNode(in)) {
 
+    }
 }
 
 SgfCollection * Parser::parseFile(const QString & infile) {
