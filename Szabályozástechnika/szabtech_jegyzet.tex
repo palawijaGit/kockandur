@@ -1,0 +1,98 @@
+\documentclass[a4paper,12pt]{book}
+\usepackage[magyar]{babel}
+\usepackage[utf8]{inputenc} 
+\begin{document}
+
+Szabályozástechnika jegyzet - készült ``Szabályozástechnika 55079'' alapján
+
+\chapter{Bevezetés}
+
+Az írányitás egy folyamatba való beavatkozás egy cél elérésének az érdekében. Tipikus irányítási feladatok például egy szoba 
+állandó hőmérsékleten tartása, autó sebbeségének irányított növelése illetve csökkentése. 
+
+\section{Alapfogalmak}
+
+\subsection*{Irányítás}
+Az irányítás olyan művelet, amely valamely folyamatban annak elindítása, fenntartása, megfelelő lefolyásának biztosítása, megváltoztatása 
+vagy megállítása végett beavatkozik. 
+
+\subsection*{Kézi vagy automatikus irányítás}
+Kézi irányítás esetén a megfigyelt mennyiség alapján a kezelő személy hoz döntést és avatkozik be a folyamatba. 
+
+\noindent Automatikus irányítás esetén a döntéshozást gépi berendezések veszik át. 
+
+\subsection*{Irányítási folyamatok alapműveletei}
+\begin{itemize} 
+\item{\emph{Érzékelés}: információszerzés a folyamatról és környezetről}
+\item{\emph{Ítéletalkotás}: információk és cél alapján döntés a teendőkről }
+\item{\emph{Rendelkezés}: utasítás a beavatkozásról }
+\item{\emph{Jelformálás}: a beavatkozás módjának és jellegének befolyásolása}
+\item{\emph{Végrehajtás}}
+\end{itemize}
+
+\subsection*{A jel fogalma, a jelek felosztása}
+
+A jel az irányítási rendszerben megjelenő információ. Információszerzésre, továbbításra és tárolásra alkalmas. 
+Van fizikai megjelenési formája (áram, feszültség, stb.) és van információtartalma, amelyet a hatás mutatja. 
+
+\noindent Jelek különböző felosztásai 
+\begin{itemize}
+\item{Idő beli lefolyás szerint:}
+
+\emph{Folyamatos}
+
+\emph{Diszkrét idejű vagy mintavételezett:}
+
+\item{Értékkészlet szerint}
+ 
+\emph{Folytonos}
+
+\emph{Szakaszos}
+
+\item{Megjelenési forma alapján:}
+
+\emph{Analóg}
+
+\emph{Digitális}
+
+\item{Érték meghatározottsága szerint}
+
+\emph{Determinisztikus}
+
+\emph{Sztohasztikus}
+
+\end{itemize}
+
+\subsection*{A rendszertechnikai összefüggések ábrázolása}
+
+\emph{Szerkezeti vázlat: } Berendezésekről és azok kapcsolatáról ad áttekintést a rendszer irányítástechnikai szempontból
+lényeges részeit feltüntetve. 
+
+\emph{Működési vázlat: } A szerkezetek kapcsolódását és egymásra gyakorolt hatását mutatja be. Általában a szerkezeteket 
+téglalapok szimbolizálják, egymásra gyakorolt hatásukat irányított (nyillal ellátott) vonalak jelzik. 
+
+\emph{Hatásvázlat:} A ki- és bemenőjelek összefüggéseit adjuk meg. 
+
+\subsection*{Vezérlés, szabályozás, zavarkompenzáció}
+
+\emph{Vezérlés:} Az információt nem közvetlen az irányított jellemző (kimenőjel) mérésével nyerjük. 
+
+\emph{Szabályozás:} Szabályozás esetén az irányítandóó mennyiséget (jellemzőt) érzékeljük. A szabályozási kör szervei: 
+\emph{érzékelő szerv}, \emph{alapjelképző szerv}, \emph{különbségképző szerv}, \emph{erősítő és jelformáló szerv} valamit 
+a \emph{végrehajtó és beavatkozó szerv}. 
+
+Követelmények az érzékelővel kapcsolatban 
+\begin{itemize}
+\item{Megbizhatóan működjön a kivánt mérési tartományban}
+\item{A tartományban legyen lineáris}
+\item{Legyen pontos}
+\item{Késleltetése legyen alacsony a folyamat időállandójához}
+\item{Lehető legkisebb legyen a mérési zaj}
+\end{itemize}
+
+
+\chapter{Második fejezet}
+
+Powered by \LaTeX
+
+\end{document}
