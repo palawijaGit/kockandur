@@ -7,13 +7,7 @@
 #include <QMenuBar>
 #include <QFileDialog>
 #include <QString>
-#include <QPixmap>
-#include <QLabel>
-#include <QImage>
-#include <QScrollArea>
-#include <QScrollBar>
-#include <QHBoxLayout>
-#include <iostream>
+#include "aranyositator_widget.h"
 
 class aranyositator : public QMainWindow
 {
@@ -29,11 +23,8 @@ private:
     QAction * aboutAction;
     QAction * zoominAction;
     QAction * zoomoutAction;
-    QLabel * pictureLabel;
-    QPixmap * picture;
-    QScrollArea * scrollArea;
 
-    float scaleFactor;
+    AranyositatorWidget * arany;
 
 public:
     aranyositator(QWidget *parent = 0);
@@ -42,15 +33,10 @@ public:
 private slots:
     void open();
     void about();
-    void zoomin();
-    void zoomout();
 
 private:
     void createMenus();
     void createActions();
-
-    void loadFile(QString & fileName);
-    void adjustScrollBar(QScrollBar *scrollBar, double factor);
 
 };
 
