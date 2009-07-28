@@ -5,29 +5,36 @@ AranyositatorWidget::AranyositatorWidget(QWidget * parent) : QWidget(parent), sc
     pictureLabel = new QLabel();
     pictureLabel->setBackgroundRole(QPalette::Base);
     pictureLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    // pictureLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     pictureLabel->setScaledContents(true);
 
     scrollArea = new QScrollArea();
     scrollArea->setBackgroundRole(QPalette::Dark);
     scrollArea->setWidget(pictureLabel);
 
-    editGroup = new QGroupBox();
+    QWidget * editBox = new QWidget();
+    QRect ebw;
+    ebw.setWidth(100);
+    editBox->setGeometry(ebw);
+    editBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
-    QWidget * box = new QWidget();
-    QRect q;
-    q.setWidth(100);
-    box->setGeometry(q);
-    box->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    QVBoxLayout * editLayout = new QVBoxLayout();
-    editLayout->addWidget( new QLineEdit(this));
-    editLayout->addWidget( new QLineEdit(this));
-    editLayout->addWidget( new QLineEdit(this));
-    editLayout->addWidget( new QLineEdit(this));
-    pictureLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);    
+
+
+    QGridLayout * editLayout = new QGridLayout();
+    // editLayout->setAlignment(Qt::AlignTop);
+    editLayout->addWidget( new QLineEdit(this),0, 1);
+    editLayout->addWidget( new QLabel("A"),0, 0);
+    editBox->setLayout(editLayout);
+    // editBox->setAligment(Qt::AlignTop);
+
+    QVBoxLayout * vLayout = new QVBoxLayout();
+    vLayout->addWidget(editBox);
+    vLayout->addStretch();
+
     QHBoxLayout * mainLayout = new QHBoxLayout();
-    box->setLayout(editLayout);
     mainLayout->addWidget(scrollArea);
-    mainLayout->addWidget(box);
+    mainLayout->addLayout(vLayout);
+    mainLayout->setAlignment(Qt::AlignTop);
     this->setLayout(mainLayout);
 }
 
@@ -58,7 +65,7 @@ void AranyositatorWidget::zoomout() {
     std::cout << fileName.toStdString();
     QImage image(fileName);
     pictureLabel->setPixmap(QPixmap::fromImage(image));
-    pictureLabel->resize(
+    pictureLabel->resize(pictureLabel->pixmap()->size());
 }
 
  AranyositatorWidget::~AranyositatorWidget() {
