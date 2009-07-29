@@ -20,7 +20,7 @@ AranyositatorWidget::AranyositatorWidget(QWidget * parent) : QWidget(parent), sc
 
 
 
-    QGridLayout * editLayout = new QGridLayout();
+    editLayout = new QGridLayout();
     // editLayout->setAlignment(Qt::AlignTop);
     editLayout->addWidget( new QLineEdit(this),0, 1);
     editLayout->addWidget( new QLabel("A"),0, 0);

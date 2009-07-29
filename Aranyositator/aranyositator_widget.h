@@ -27,7 +27,8 @@ class AranyositatorWidget : public QWidget
 
         QLabel * pictureLabel;
         QScrollArea * scrollArea;
-        QGroupBox   * editGroup;
+        QGridLayout * editLayout;
+
         float scaleFactor;
 
     public slots:
