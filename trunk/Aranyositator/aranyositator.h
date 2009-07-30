@@ -23,6 +23,7 @@ private:
     QAction * aboutAction;
     QAction * zoominAction;
     QAction * zoomoutAction;
+    QAction * zoomnormalAction;
 
     AranyositatorWidget * arany;
 

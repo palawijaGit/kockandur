@@ -2,15 +2,18 @@
 
 AranyositatorWidget::AranyositatorWidget(QWidget * parent) : QWidget(parent), scaleFactor(1.0)
 {
-    pictureLabel = new QLabel();
-    pictureLabel->setBackgroundRole(QPalette::Base);
-    pictureLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    // pictureLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    pictureLabel->setScaledContents(true);
+    scene = new QGraphicsScene();
+    grafView = new QGraphicsView(scene);
 
-    scrollArea = new QScrollArea();
-    scrollArea->setBackgroundRole(QPalette::Dark);
-    scrollArea->setWidget(pictureLabel);
+    // pictureLabel = new QLabel();
+    // pictureLabel->setBackgroundRole(QPalette::Base);
+    grafView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    // pictureLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    // pictureLabel->setScaledContents(true);
+
+    // scrollArea = new QScrollArea();
+    // scrollArea->setBackgroundRole(QPalette::Dark);
+    // scrollArea->setWidget(grafView);
 
     QWidget * editBox = new QWidget();
     QRect ebw;
@@ -32,7 +35,7 @@ AranyositatorWidget::AranyositatorWidget(QWidget * parent) : QWidget(parent), sc
     vLayout->addStretch();
 
     QHBoxLayout * mainLayout = new QHBoxLayout();
-    mainLayout->addWidget(scrollArea);
+    mainLayout->addWidget(grafView);
     mainLayout->addLayout(vLayout);
     mainLayout->setAlignment(Qt::AlignTop);
     this->setLayout(mainLayout);
@@ -41,31 +44,26 @@ AranyositatorWidget::AranyositatorWidget(QWidget * parent) : QWidget(parent), sc
 void AranyositatorWidget::zoomin() {
 
     scaleFactor *= 1.25;
-    pictureLabel->resize(scaleFactor * pictureLabel->pixmap()->size());
-
-    adjustScrollBar(scrollArea->horizontalScrollBar(), 1.25);
-    adjustScrollBar(scrollArea->verticalScrollBar(), 1.25);
+    grafView->scale(1.25, 1.25);
 }
 
 void AranyositatorWidget::zoomout() {
     scaleFactor *= 0.8;
-    pictureLabel->resize(scaleFactor * pictureLabel->pixmap()->size());
-
-    adjustScrollBar(scrollArea->horizontalScrollBar(), 0.8);
-    adjustScrollBar(scrollArea->verticalScrollBar(), 0.8);
+    grafView->scale(0.8, 0.8);
 }
 
- void AranyositatorWidget::adjustScrollBar(QScrollBar *scrollBar, double factor)
- {
-     scrollBar->setValue(int(factor * scrollBar->value()
-                             + ((factor - 1) * scrollBar->pageStep()/2)));
- }
+void AranyositatorWidget::zoomnormal() {
+    grafView->scale( 1.0 / scaleFactor, 1.0 / scaleFactor);
+    scaleFactor = 1.0;
+}
 
  void AranyositatorWidget::loadFile(QString & fileName) {
     std::cout << fileName.toStdString();
-    QImage image(fileName);
-    pictureLabel->setPixmap(QPixmap::fromImage(image));
-    pictureLabel->resize(pictureLabel->pixmap()->size());
+
+    QPixmap pic2(fileName);
+
+    grafView->scene()->clear();
+    grafView->scene()->addPixmap(pic2);
 }
 
  AranyositatorWidget::~AranyositatorWidget() {
