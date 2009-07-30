@@ -43,6 +43,9 @@ void aranyositator::createActions() {
     zoomoutAction = new QAction(tr("Zoom o&ut"), this);
     connect(zoomoutAction, SIGNAL(triggered()), arany, SLOT(zoomout()));
 
+    zoomnormalAction = new QAction(tr("Reset Size"), this);
+    connect(zoomnormalAction, SIGNAL(triggered()), arany, SLOT(zoomnormal()));
+
     closeAction = new QAction(tr("&Quit"), this);
     connect(closeAction, SIGNAL(triggered()), this, SLOT(close()));
 }

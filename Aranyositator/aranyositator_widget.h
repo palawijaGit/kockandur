@@ -11,6 +11,8 @@
 #include <QRect>
 #include <QSizePolicy>
 #include <QLineEdit>
+#include <QGraphicsView>
+#include <QGraphicsScene>
 #include <iostream>
 
 class AranyositatorWidget : public QWidget
@@ -25,7 +27,8 @@ class AranyositatorWidget : public QWidget
 
     private:
 
-        QLabel * pictureLabel;
+        QGraphicsView * grafView;
+        QGraphicsScene * scene;
         QScrollArea * scrollArea;
         QGridLayout * editLayout;
 
@@ -35,8 +38,8 @@ class AranyositatorWidget : public QWidget
 
         void zoomin();
         void zoomout();        
+        void zoomnormal();
         void loadFile(QString & fileName);
-        void adjustScrollBar(QScrollBar *scrollBar, double factor);
 };
 
 #endif // ARANYOSITATOR_WIDGET_H
