@@ -2,7 +2,7 @@
 
 AranyositatorWidget::AranyositatorWidget(QWidget * parent) : QWidget(parent), scaleFactor(1.0)
 {
-    scene = new QGraphicsScene();
+    scene = new AranyScene();
     grafView = new QGraphicsView(scene);
 
     // pictureLabel = new QLabel();
@@ -63,6 +63,7 @@ void AranyositatorWidget::zoomnormal() {
     QPixmap pic2(fileName);
 
     grafView->scene()->clear();
+    
     grafView->scene()->addPixmap(pic2);
 }
 

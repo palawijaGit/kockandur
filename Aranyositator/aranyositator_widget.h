@@ -12,7 +12,7 @@
 #include <QSizePolicy>
 #include <QLineEdit>
 #include <QGraphicsView>
-#include <QGraphicsScene>
+#include <arany_scene.h>
 #include <iostream>
 
 class AranyositatorWidget : public QWidget
@@ -28,7 +28,7 @@ class AranyositatorWidget : public QWidget
     private:
 
         QGraphicsView * grafView;
-        QGraphicsScene * scene;
+        AranyScene * scene;
         QScrollArea * scrollArea;
         QGridLayout * editLayout;
 
