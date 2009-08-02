@@ -5,6 +5,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPen>
 #include <QBrush>
+#include <QGraphicsItem>
 #include <iostream>
 
 class AranyScene : public QGraphicsScene {
@@ -22,6 +23,8 @@ private:
 
     qreal down_x, down_y;
 
+signals:
+    void lineAdded(qreal x1, qreal y1, qreal x2, qreal y2);
 };
 
 #endif // ARANY_SCENE_H
