@@ -57,13 +57,15 @@ void AranyositatorWidget::zoomnormal() {
     scaleFactor = 1.0;
 }
 
- void AranyositatorWidget::loadFile(QString & fileName) {
-    std::cout << fileName.toStdString();
+ void AranyositatorWidget::loadFile(QString & fileName) {  
 
     QPixmap pic2(fileName);
 
-    grafView->scene()->clear();
-    
+    delete scene;
+    scene = new AranyScene();
+
+    grafView->setScene(scene);
+    grafView->scene()->clear();    
     grafView->scene()->addPixmap(pic2);
 }
 

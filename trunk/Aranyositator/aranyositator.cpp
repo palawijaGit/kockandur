@@ -24,6 +24,7 @@ void aranyositator::createMenus() {
     viewMenu = menuBar()->addMenu(tr("&Edit"));
     viewMenu->addAction(zoominAction);
     viewMenu->addAction(zoomoutAction);
+    viewMenu->addAction(zoomnormalAction);
 
     aboutMenu = menuBar()->addMenu(tr("&About"));
     aboutMenu->addAction(aboutAction);
