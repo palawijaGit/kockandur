@@ -8,6 +8,7 @@ AranyositatorWidget::AranyositatorWidget(QWidget * parent) : QWidget(parent), sc
     // pictureLabel = new QLabel();
     // pictureLabel->setBackgroundRole(QPalette::Base);
     grafView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    grafView->setRenderHint(QPainter::Antialiasing, true);
     // pictureLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     // pictureLabel->setScaledContents(true);
 
@@ -70,5 +71,9 @@ void AranyositatorWidget::zoomnormal() {
 }
 
  AranyositatorWidget::~AranyositatorWidget() {
+
+ }
+
+ void AranyositatorWidget::addNewItem(qreal x1, qreal y1, qreal x2, qreal y2) {
 
  }

@@ -40,6 +40,16 @@ class AranyositatorWidget : public QWidget
         void zoomout();        
         void zoomnormal();
         void loadFile(QString & fileName);
+        void addNewItem(qreal x1, qreal y1, qreal x2, qreal y2);
+
+};
+
+class AranyItem {
+    private:
+        qreal x1, y1, x2, y2;
+        QLineEdit * editbox;
+    signals:
+        void valueChanged(qreal factor);
 };
 
 #endif // ARANYOSITATOR_WIDGET_H
