@@ -1,4 +1,4 @@
-This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2009.7.11)  7 AUG 2009 16:14
+This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=pdflatex 2009.7.11)  9 AUG 2009 00:08
 entering extended mode
  %&-line parsing enabled.
 **mi.tex
@@ -75,7 +75,31 @@ Package typearea Info: These are the values describing the layout:
 \c@figure=\count87
 \c@table=\count88
 \bibindent=\dimen102
-) (/usr/share/texmf-texlive/tex/generic/babel/babel.sty
+) (/usr/share/texmf-texlive/tex/latex/base/makeidx.sty
+Package: makeidx 2000/03/29 v1.0m Standard LaTeX package
+)
+(/usr/share/texmf-texlive/tex/latex/graphics/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf-texlive/tex/latex/graphics/graphics.sty
+Package: graphics 2006/02/20 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texmf-texlive/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/etc/texmf/tex/latex/config/graphics.cfg
+File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
+)
+Package graphics Info: Driver file: pdftex.def on input line 90.
+
+(/usr/share/texmf-texlive/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2007/01/08 v0.04d Graphics/color for pdfTeX
+\Gread@gobject=\count89
+))
+\Gin@req@height=\dimen103
+\Gin@req@width=\dimen104
+)
+(/usr/share/texmf-texlive/tex/generic/babel/babel.sty
 Package: babel 2005/11/23 v3.8h The Babel package
 
 (/usr/share/texmf-texlive/tex/generic/babel/magyar.ldf
@@ -83,8 +107,8 @@ Language: magyar 2005/03/30 v1.4j Magyar support from the babel system
 
 (/usr/share/texmf-texlive/tex/generic/babel/babel.def
 File: babel.def 2005/11/23 v3.8h Babel common definitions
-\babel@savecnt=\count89
-\U@D=\dimen103
+\babel@savecnt=\count90
+\U@D=\dimen105
 )
 
 Package babel Warning: No hyphenation patterns were loaded for
@@ -312,45 +336,85 @@ Now handling font encoding U ...
 )) (./mi.aux)
 \openout1 = `mi.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 5.
-LaTeX Font Info:    ... okay on input line 5.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 5.
-LaTeX Font Info:    ... okay on input line 5.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 5.
-LaTeX Font Info:    ... okay on input line 5.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 5.
-LaTeX Font Info:    ... okay on input line 5.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 5.
-LaTeX Font Info:    ... okay on input line 5.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 5.
-LaTeX Font Info:    ... okay on input line 5.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 7.
+LaTeX Font Info:    ... okay on input line 7.
+
+(/usr/share/texmf/tex/context/base/supp-pdf.tex
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count91
+\scratchdimen=\dimen106
+\scratchbox=\box27
+\nofMPsegments=\count92
+\nofMParguments=\count93
+\everyMPshowfont=\toks17
+\MPscratchCnt=\count94
+\MPscratchDim=\dimen107
+\MPnumerator=\count95
+\everyMPtoPDFconversion=\toks18
+) (./mi.toc
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 3.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 3.
+)
+\tf@toc=\write3
+\openout3 = `mi.toc'.
+
  [1
+
+
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2
 
 ]
 fejezet 1.
 
-Overfull \hbox (13.06935pt too wide) in paragraph at lines 35--39
-[]\OT1/cmr/m/it/10 Agensprogram\OT1/cmr/m/n/10 : Az ^^Sagensf^^?uggv^^Seny egy 
-ab-sz-trakt matem-atikai le^^S^^Pr^^Sas (p^^Seldu^^Sal egy t^^Sabl^^Sazat).
+Overfull \hbox (12.97379pt too wide) in paragraph at lines 56--58
+\OT1/cmr/m/n/10 A tel-jes^^S^^Ptm^^Seny^^Sert^^Seket jobb asz-erint meg^^Sallap
+^^S^^Ptani hogy mit sz-eretn^^Senk el^^Serni a k^^?ornyezeten
  []
 
-[3] (./mi.aux) ) 
+
+Overfull \hbox (11.28053pt too wide) in paragraph at lines 60--63
+\OT1/cmr/m/n/10 Pl ha egy porsz^^S^^Pv^^So ^^Sagens tel-jes^^S^^Ptm^^Senym^^Ser
+t^^Sek^^Set feltakar^^S^^Ptott por men-nyis^^Sege adja racion^^Salis
+ []
+
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 69.
+(/usr/share/texmf-texlive/tex/latex/base/omscmr.fd
+File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 69.
+ [1
+
+] [2] (./mi.aux) ) 
 Here is how much of TeX's memory you used:
- 1443 strings out of 94834
- 17494 string characters out of 1179181
- 80785 words of memory out of 1500000
- 4668 multiletter control sequences out of 10000+50000
- 5526 words of font info for 20 fonts, out of 1200000 for 2000
+ 2123 strings out of 94834
+ 26355 string characters out of 1179181
+ 91457 words of memory out of 1500000
+ 5317 multiletter control sequences out of 10000+50000
+ 6487 words of font info for 23 fonts, out of 1200000 for 2000
  212 hyphenation exceptions out of 8191
- 35i,7n,35p,178b,164s stack positions out of 5000i,500n,6000p,200000b,5000s
-</usr/share/texmf-texlive/fonts/type1/bluesky/cm/cmr10.pfb></us
-r/share/texmf-texlive/fonts/type1/bluesky/cm/cmssbx10.pfb></usr/share/texmf-tex
-live/fonts/type1/bluesky/cm/cmti10.pfb>
-Output written on mi.pdf (3 pages, 26392 bytes).
+ 35i,8n,35p,205b,214s stack positions out of 5000i,500n,6000p,200000b,5000s
+</usr/share/texmf-texlive/fonts/type1/bluesky/cm/cmbxti10.pfb
+></usr/share/texmf-texlive/fonts/type1/bluesky/cm/cmr10.pfb></usr/share/texmf-t
+exlive/fonts/type1/bluesky/cm/cmsl10.pfb></usr/share/texmf-texlive/fonts/type1/
+bluesky/cm/cmssbx10.pfb></usr/share/texmf-texlive/fonts/type1/bluesky/cm/cmsy10
+.pfb></usr/share/texmf-texlive/fonts/type1/bluesky/cm/cmti10.pfb>
+Output written on mi.pdf (4 pages, 43615 bytes).
 PDF statistics:
- 24 PDF objects out of 1000 (max. 8388607)
+ 39 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 131072)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
