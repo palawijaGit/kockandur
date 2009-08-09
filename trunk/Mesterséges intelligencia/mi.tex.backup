@@ -61,4 +61,25 @@ az alapján hogy hogy szeretnénk hogy az ágens viselkedjen.
 Pl ha egy porszívó ágens teljesítménymértékét feltakarított por mennyisége adja racionális viselkedés
 lenne kiönteni a port és újra feltakarítani. 
 
+\subsection{Racionalitás}
+
+Racionalítást meghatározó tényezők:
+
+\begin{itemize}
+\item{Siker fokát mérő teljesítményérték}
+\item{Ágens tudása a környezetéről}
+\item{Környezeten végrehajtható cselekvések}
+\item{Érzékelési sorozat az adott pillanatig} 
+\end{itemize}
+
+\bigskip
+\noindent
+\textbf{\emph{Racionális ágens}}: 
+Az ideális racionális ágens minden egyes észlelési sorozathoz a benne található tények és 
+beépített tudása alapján minden elvárható dolgot megtesz teljesítménymértéke maximalizálásáért. 
+
+\subsection{Mindentudás, tanulás és autonómia}
+
+A mindentudást és racionalítást külön kell választanünk. 
+
 \end{document}
