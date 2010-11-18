@@ -38,6 +38,49 @@ EXECUTABLE	:= Proba
 # C/C++ source files (compiled with gcc / c++)
 CCFILES		:= Proba.cpp
 
+USEGLLIB	:= 1
+USEGLUT		:= 1
+
+#CXX        := g++
+#CC         := gcc
+#LINK       := g++ -fPIC
+
+#CXXWARN_FLAGS := \
+	-W -Wall \
+	-Wimplicit \
+	-Wswitch \
+	-Wformat \
+	-Wchar-subscripts \
+	-Wparentheses \
+	-Wmultichar \
+	-Wtrigraphs \
+	-Wpointer-arith \
+	-Wcast-align \
+	-Wreturn-type \
+	-Wno-unused-function \
+	$(SPACE)
+
+#CWARN_FLAGS := $(CXXWARN_FLAGS) \
+	-Wstrict-prototypes \
+	-Wmissing-prototypes \
+	-Wmissing-declarations \
+	-Wnested-externs \
+	-Wmain \
+
+#CXXFLAGS  += $(COMMONFLAGS)
+#CFLAGS    += $(COMMONFLAGS)
+
+# $(OBJDIR)/%.c.o : $(SRCDIR)%.c $(C_DEPS)
+#	$(VERBOSE)$(CC) $(CFLAGS) -o $@ -c $<
+
+# $(OBJDIR)/%.cpp.o : $(SRCDIR)%.cpp $(C_DEPS)
+#	$(VERBOSE)$(CXX) $(CXXFLAGS) -o $@ -c $<
+
+#OBJS +=  $( %.cpp,$(OBJDIR)/%.cpp.o,$(notdir $(CCFILES)))
+#OBJS +=  $( %.c,$(OBJDIR)/%.c.o,$(notdir $(CFILES)))
+
+#Proba.bin: $(OBJS) Makefile
+#		   $(VERBOSE) $(LINKLINE)
 
 ################################################################################
 # Rules and targets
@@ -45,6 +88,8 @@ CCFILES		:= Proba.cpp
 # NOTE: Assuming P4 based install until OpenCL becomes public
 # Adjust P4_Root, default is ${HOME}/perforce/
 # P4_ROOT=${HOME}/myperforce/
+
+
 
 include ../../common/common_opencl.mk
 
