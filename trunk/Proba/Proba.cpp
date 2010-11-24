@@ -462,13 +462,19 @@ void DisplayGL()
 
         // Draw processed image
         std::cout << "Maybe before segfault\n";
-        glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, uiOutput); 
+        glDrawPixels(width, height, GL_RGB, GL_UNSIGNED_BYTE, uiOutput); 
         std::cout << "Maybe after segfault\n";
     }
     else 
     {
         // Skip processing and draw the raw input image
-        glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, uiInput); 
+        /*        for (int i = 0; i < 20000; i++) { 
+            uiInput[i*3] = 255;
+            uiInput[i*3+1] = 0;
+            uiInput[i*3+2] = 0;
+            //            uiInput[i*4+3] = 255;
+            } */
+        glDrawPixels(width, height, GL_RGB, GL_UNSIGNED_BYTE, uiInput); 
    }
 
     //  Flip backbuffer to screen
