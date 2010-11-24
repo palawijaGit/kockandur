@@ -54,13 +54,13 @@ __kernel void Rgb2GrayScale(__global const uchar4 * in,
                   float v =                   
                       (float) in[memoffset].x * 0.3f + 
                       (float) in[memoffset].y * 0.59f + 
-                      (float) in[memoffset].z * 0.31f;                  
+                      (float) in[memoffset].z * 0.11f;                                        
                   
                   unsigned int uiPackedPix = 0x00000000;
                   uiPackedPix |= 0x000000FF & (((unsigned int)v));
                   uiPackedPix |= 0x0000FF00 & (((unsigned int)v) << 8);
                   uiPackedPix |= 0x00FF0000 & (((unsigned int)v) << 16);
-                  uiPackedPix |= 0xFF000000 & (((unsigned int)v) << 24);                  
+//                  uiPackedPix |= 0xFF000000 & (((unsigned int)v) << 24);                  
                   out[memoffset] = uiPackedPix;
               }
 }
