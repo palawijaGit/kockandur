@@ -38,14 +38,43 @@ EXECUTABLE	:= Proba
 # C/C++ source files (compiled with gcc / c++)
 CCFILES		:= Proba.cpp
 
-USEGLLIB	:= 1
-USEGLUT		:= 1
+.SUFFIXES : .cu .cu_dbg.o .c_dbg.o .cpp_dbg.o .cu_rel.o .c_rel.o .cpp_rel.o .cubin .ptx
 
-#CXX        := g++
-#CC         := gcc
-#LINK       := g++ -fPIC
+# Add new SM Versions here as devices with new Compute Capability are released
+SM_VERSIONS   := sm_10 sm_11 sm_12 sm_13 sm_20
 
-#CXXWARN_FLAGS := \
+CUDA_INSTALL_PATH ?= /usr/local/cuda
+
+ifdef cuda-install
+	CUDA_INSTALL_PATH := $(cuda-install)
+endif
+
+OSUPPER = $(shell uname -s 2>/dev/null | tr [:lower:] [:upper:])
+OSLOWER = $(shell uname -s 2>/dev/null | tr [:upper:] [:lower:])
+INCCC   = $(shell pkg-config --cflags --libs opencv) 
+
+HP_64 = $(shell uname -m | grep 64)
+OSARCH= $(shell uname -m)
+
+ROOTDIR      ?= ..
+LIBDIR       := $(ROOTDIR)/shared/lib
+SHAREDDIR    := $(ROOTDIR)/shared
+OCLROOTDIR   := $(ROOTDIR)/OpenCL
+OCLCOMMONDIR ?= $(OCLROOTDIR)/common
+OCLBINDIR    ?= $(OCLROOTDIR)/bin/
+BINDIR       ?= ./
+OCLLIBDIR    := $(OCLCOMMONDIR)/lib
+INCDIR       ?= .
+OBJDIR       ?= obj
+
+CXX        := g++
+CC         := gcc
+LINK       := g++ -fPIC
+
+INCLUDES  += -I$(INCDIR) -I$(OCLCOMMONDIR)/inc/ -I$(SHAREDDIR)/inc/ -I../common/inc #$(INCCC)
+INCLUDES  += $(INCCC)
+
+CXXWARN_FLAGS := \
 	-W -Wall \
 	-Wimplicit \
 	-Wswitch \
@@ -60,27 +89,80 @@ USEGLUT		:= 1
 	-Wno-unused-function \
 	$(SPACE)
 
-#CWARN_FLAGS := $(CXXWARN_FLAGS) \
+CWARN_FLAGS := $(CXXWARN_FLAGS) \
 	-Wstrict-prototypes \
 	-Wmissing-prototypes \
 	-Wmissing-declarations \
 	-Wnested-externs \
 	-Wmain \
 
-#CXXFLAGS  += $(COMMONFLAGS)
-#CFLAGS    += $(COMMONFLAGS)
+LIB_ARCH        := $(OSARCH)
 
-# $(OBJDIR)/%.c.o : $(SRCDIR)%.c $(C_DEPS)
-#	$(VERBOSE)$(CC) $(CFLAGS) -o $@ -c $<
+CXXFLAGS  := $(CXXWARN_FLAGS) $(CXX_ARCH_FLAGS)
+CFLAGS    := $(CWARN_FLAGS) $(CXX_ARCH_FLAGS)
+LINK      += $(CXX_ARCH_FLAGS)
 
-# $(OBJDIR)/%.cpp.o : $(SRCDIR)%.cpp $(C_DEPS)
-#	$(VERBOSE)$(CXX) $(CXXFLAGS) -o $@ -c $<
 
-#OBJS +=  $( %.cpp,$(OBJDIR)/%.cpp.o,$(notdir $(CCFILES)))
-#OBJS +=  $( %.c,$(OBJDIR)/%.c.o,$(notdir $(CFILES)))
+COMMONFLAGS += $(INCLUDES) -g
+LIBSUFFIX   := D
 
-#Proba.bin: $(OBJS) Makefile
-#		   $(VERBOSE) $(LINKLINE)
+NVCCFLAGS       += -m32
+LIB_ARCH         = i386
+CUDPPLIB_SUFFIX  = i386
+
+OPENGLLIB := -lGL -lGLU -lX11 -lXi -lXmu
+OPENGLLIB += -lGLEW -L/usr/X11R6/lib
+OPENGLLIB += -lglut -L/usr/lib 
+OPENGLLIB += $(INCCC)
+
+LIB       := ${USRLIBDIR} -L${OCLLIBDIR} -L$(LIBDIR) -L$(SHAREDDIR)/lib/$(OSLOWER) 
+LIB += -lOpenCL ${OPENGLLIB} ${LIB} 
+
+ifneq ($(STATIC_LIB),)
+	TARGETDIR := $(OCLLIBDIR)
+	TARGET   := $(subst .a,_$(LIB_ARCH)$(LIBSUFFIX).a,$(OCLLIBDIR)/$(STATIC_LIB))
+	LINKLINE  = ar qv $(TARGET) $(OBJS) 
+else
+	LIB += -loclUtil_$(LIB_ARCH)$(LIBSUFFIX) -lshrutil_$(LIB_ARCH)$(LIBSUFFIX)
+	TARGETDIR := $(BINDIR)/$(BINSUBDIR)
+	TARGET    := $(TARGETDIR)/$(EXECUTABLE)
+	LINKLINE  = $(LINK) -o $(TARGET) $(OBJS) $(LIB)
+endif
+
+CXXFLAGS  += $(COMMONFLAGS)
+CFLAGS    += $(COMMONFLAGS)
+#OBJDIR := $(ROOTOBJDIR)/$(BINSUBDIR)
+OBJS +=  $(patsubst %.cpp,$(OBJDIR)/%.cpp.o,$(notdir $(CCFILES)))
+OBJS +=  $(patsubst %.c,$(OBJDIR)/%.c.o,$(notdir $(CFILES)))
+
+$(OBJDIR)/%.c.o : $(SRCDIR)%.c $(C_DEPS)
+	$(VERBOSE)$(CC) $(CFLAGS) -o $@ -c $<
+
+$(OBJDIR)/%.cpp.o : $(SRCDIR)%.cpp $(C_DEPS)
+	$(VERBOSE)$(CXX) $(CXXFLAGS) -o $@ -c $<
+
+$(TARGET): makedirectories $(OBJS) Makefile
+	$(VERBOSE)$(LINKLINE)
+
+makedirectories:
+	$(VERBOSE)mkdir -p $(LIBDIR)
+	$(VERBOSE)mkdir -p $(OBJDIR)
+	$(VERBOSE)mkdir -p $(TARGETDIR)
+
+
+tidy :
+	$(VERBOSE)find . | egrep "#" | xargs rm -f
+	$(VERBOSE)find . | egrep "\~" | xargs rm -f
+
+clean : tidy
+	$(VERBOSE)rm -f $(OBJS)
+	$(VERBOSE)rm -f $(TARGET)
+
+clobber : clean
+	$(VERBOSE)rm -rf $(ROOTOBJDIR)
+	$(VERBOSE)find $(TARGETDIR) | egrep "ptx" | xargs rm -f
+	$(VERBOSE)find $(TARGETDIR) | egrep "txt" | xargs rm -f
+	$(VERBOSE)rm -f $(TARGETDIR)/samples.list
 
 ################################################################################
 # Rules and targets
@@ -89,8 +171,6 @@ USEGLUT		:= 1
 # Adjust P4_Root, default is ${HOME}/perforce/
 # P4_ROOT=${HOME}/myperforce/
 
-
-
-include ../../common/common_opencl.mk
+# include ../../common/common_opencl.mk
 
 
