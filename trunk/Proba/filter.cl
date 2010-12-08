@@ -19,19 +19,16 @@ __kernel void MorphFill(__global const float * in,
               out[index] = in[index];
 } 
 
-__kernel void MorphFit(__global const float * in, 
-              __global       float * out) { 
+__kernel void MorphFit(__global const uchar4 * in, 
+                            __global uchar4 * out,
+                            unsigned int imageWidth, 
+                            unsigned int imageHeight) { 
 
               // Block index
-              int bx  = get_group_id(0); 
-              int by  = get_group_id(1);
+              int bx  = get_global_id(0); 
+              int by  = get_global_id(1);
 
-              // Thread index 
-              
-              int tx = get_local_id(0); 
-              int ty = get_local_id(1);
-
-              int index = bx * 10 + by;
+              int memoffset = mul24(by, (int) get_global_size(0)) + bx;
 
               out[index] = in[index];
 }
