@@ -18,6 +18,9 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include "cv.h" 
+#include "highgui.h" 
+#include <stdio.h>  // A Simple Camera Capture Framework 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Program main
@@ -71,6 +74,7 @@ cl_mem cmPinnedBufOut2;
 cl_mem cmPinnedBufIn3;               // OpenCL host memory input buffer object:  pinned 
 cl_mem cmPinnedBufOut3;
 
+CvCapture* capture = NULL;
 
 cl_mem cmDevBufIn; 
 cl_mem cmDevBufOut;
@@ -320,7 +324,7 @@ void Rgb2GrayScale(cl_uint* uiInputImage = NULL, cl_uchar* uiOutputImage = NULL)
     return;
 }
 
-void BwFill(cl_uchar * uiInputImage = NULL, cl_uchar * uiOutputImage = NULL) { 
+void BwFit(cl_uchar * uiInputImage = NULL, cl_uchar * uiOutputImage = NULL) { 
     ckProba = clCreateKernel(cpProgram, "MorphFit", &errorNum);
     if (errorNum != CL_SUCCESS)
     {
@@ -358,9 +362,46 @@ void BwFill(cl_uchar * uiInputImage = NULL, cl_uchar * uiOutputImage = NULL) {
     } else { 
         std::cout << "clFinish failed\n";
     }
+} 
 
+void BwFill(cl_uchar * uiInputImage = NULL, cl_uchar * uiOutputImage = NULL) { 
+    ckProba = clCreateKernel(cpProgram, "MorphFill", &errorNum);
+    if (errorNum != CL_SUCCESS)
+    {
+        shrLog("Error: Failed to create kernel\n");
+        exit(0);
+    }
 
+    cmDevBufIn = clCreateBuffer(cxGPUContext, CL_MEM_READ_ONLY, szBuffBytesout, NULL, &errorNum);
+    cmDevBufOut = clCreateBuffer(cxGPUContext, CL_MEM_WRITE_ONLY, szBuffBytesout, NULL, &errorNum);
+        
+    szLocalWorkSize[0] = BlockDimX;
+    szLocalWorkSize[1] = BlockDimY;
+    szGlobalWorkSize[0] = shrRoundUp((int)szLocalWorkSize[0], width); 
+    szGlobalWorkSize[1] = shrRoundUp((int)szLocalWorkSize[1], height);
+    int localWidth = BlockDimX + 2;
 
+    errorNum = clSetKernelArg(ckProba, 0, sizeof(cl_mem), (void*) &cmDevBufIn);
+    errorNum |= clSetKernelArg(ckProba, 1, sizeof(cl_mem), (void*) &cmDevBufOut);
+    errorNum |= clSetKernelArg(ckProba, 2, sizeof(cl_uint), (void*) &width);
+    errorNum |= clSetKernelArg(ckProba, 3, sizeof(cl_uint), (void*) &height);
+    errorNum |= clSetKernelArg(ckProba, 4, sizeof(cl_uint)*(BlockDimX+2)*(BlockDimY+2), NULL);
+    errorNum |= clSetKernelArg(ckProba, 5, sizeof(cl_int), (void*) &localWidth); 
+
+    std::cout << "Running processing\n";
+    errorNum = 0; 
+    errorNum |= clEnqueueWriteBuffer(commandqueue, cmDevBufIn, CL_FALSE, 0, szBuffBytesout, 
+                                       (void*)&uiInputImage[0], 0, NULL, NULL);
+    errorNum |= clFinish(commandqueue);
+    errorNum |= clEnqueueNDRangeKernel(commandqueue, ckProba, 2, NULL, szGlobalWorkSize, szLocalWorkSize, 0, NULL, NULL);
+    errorNum |= clFinish(commandqueue);
+    errorNum |= clEnqueueReadBuffer(commandqueue, cmDevBufOut, CL_FALSE, 0, szBuffBytesout, (void*)&uiOutputImage[0], 0, NULL, NULL);
+    errorNum |= clFinish(commandqueue);
+    if (!errorNum) { 
+        std::cout << "clFinish ended succesfully\n";
+    } else { 
+        std::cout << "clFinish failed\n";
+    }
 } 
 
 void GrayScale2Bw(cl_uchar * uiInputImage = NULL, cl_uchar * uiOutputImage = NULL, unsigned char threshold = 128) {
@@ -489,45 +530,83 @@ int main(int argc, char** argv)
             std::cout << "Image height: " << height << std::endl;
             std::cout << "Channels: " << channels << std::endl;
             std::cout << "***************************************" << std::endl;
-        }
-        iGraphicsWinHeight = ((float)height / (float) width) * iGraphicsWinWidth;  // GL Windows height
+        }        
+    } else { 
+        // ha nincs kep megadva akkor kamerakepen probalunk dolgozni
+        capture = cvCaptureFromCAM( CV_CAP_ANY );   
+        if( !capture ) {     
+            fprintf( stderr, "ERROR: capture is NULL \n" );     
+            getchar();     
+            return -1;   
+        }    
+
+        // temporary display - opengl window will be used instead
+
+        // cvNamedWindow( "mywindow", CV_WINDOW_AUTOSIZE );
+
+        IplImage* frame = cvQueryFrame( capture );     
+        if (!frame) 
+            return -1;
+        height = frame->height; 
+        width  = frame->width;
+        std::cout << frame->width << " " << frame->height << " " << frame->depth << std::endl;
         
-        szBuffBytes = width * height * sizeof (unsigned int) ;
-        szBuffBytesout = width * height * sizeof (unsigned char);
 
-        cmPinnedBufIn = clCreateBuffer(cxGPUContext, CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, szBuffBytes, NULL, &errorNum);
-        cmPinnedBufOut = clCreateBuffer(cxGPUContext, CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, szBuffBytesout, NULL, &errorNum);
-        uiInput = (cl_uint*)clEnqueueMapBuffer(commandqueue, cmPinnedBufIn, CL_TRUE, CL_MAP_WRITE, 0, szBuffBytes, 0, NULL, NULL, &errorNum);
-        uiOutput = (cl_uchar *)clEnqueueMapBuffer(commandqueue, cmPinnedBufOut, CL_TRUE, CL_MAP_READ, 0, szBuffBytesout, 0, NULL, NULL, &errorNum);
-
-
-        cmPinnedBufIn2 = clCreateBuffer(cxGPUContext, CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, szBuffBytesout, NULL, &errorNum);
-        cmPinnedBufOut2 = clCreateBuffer(cxGPUContext, CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, szBuffBytesout, NULL, &errorNum);
-        uiInput2 = (cl_uchar *)clEnqueueMapBuffer(commandqueue, cmPinnedBufIn2, CL_TRUE, CL_MAP_WRITE, 0, szBuffBytesout, 0, NULL, NULL, &errorNum);
-        uiOutput2 = (cl_uchar *)clEnqueueMapBuffer(commandqueue, cmPinnedBufOut2, CL_TRUE, CL_MAP_READ, 0, szBuffBytesout, 0, NULL, NULL, &errorNum);
-
-        cmPinnedBufIn3 = clCreateBuffer(cxGPUContext, CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, szBuffBytesout, NULL, &errorNum);
-        cmPinnedBufOut3 = clCreateBuffer(cxGPUContext, CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, szBuffBytesout, NULL, &errorNum);
-        uiInput3 = (cl_uchar *)clEnqueueMapBuffer(commandqueue, cmPinnedBufIn3, CL_TRUE, CL_MAP_WRITE, 0, szBuffBytesout, 0, NULL, NULL, &errorNum);
-        uiOutput3 = (cl_uchar *)clEnqueueMapBuffer(commandqueue, cmPinnedBufOut3, CL_TRUE, CL_MAP_READ, 0, szBuffBytesout, 0, NULL, NULL, &errorNum);
-
-        
-        LoadPPM4ub(argv[1], (unsigned char **) &uiInput, &width, &height); 
-
-        InitGL(&argc, argv);
-        glutMainLoop();
-
+        // while( 1 ) {     // Get one frame     
+        //            IplImage* frame = cvQueryFrame( capture );     
+            /* if( !frame ) {       
+                fprintf( stderr, "ERROR: frame is null...\n" );       
+                getchar();       
+                break;     
+            }                  
+            std::cout << frame->width << " " << frame->height << " " << frame->depth << std::endl;
+            cvShowImage( "mywindow", frame );     // Do not release the frame!      //If ESC key pressed, Key=0x10001B under OpenCV 0.9.7(linux version),     //remove higher bits using AND operator     
+            if( (cvWaitKey(10) & 255) == 27 ) 
+                break;   
+        }    // Release the capture device housekeeping   
+            */
+        //cvDestroyWindow( "mywindow" );
     }
+    
+    iGraphicsWinHeight = ((float)height / (float) width) * iGraphicsWinWidth;  // GL Windows height
+    
+    szBuffBytes = width * height * sizeof (unsigned int) ;
+    szBuffBytesout = width * height * sizeof (unsigned char);
+    
+    cmPinnedBufIn = clCreateBuffer(cxGPUContext, CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, szBuffBytes, NULL, &errorNum);
+    cmPinnedBufOut = clCreateBuffer(cxGPUContext, CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, szBuffBytesout, NULL, &errorNum);
+    uiInput = (cl_uint*)clEnqueueMapBuffer(commandqueue, cmPinnedBufIn, CL_TRUE, CL_MAP_WRITE, 0, szBuffBytes, 0, NULL, NULL, &errorNum);
+    uiOutput = (cl_uchar *)clEnqueueMapBuffer(commandqueue, cmPinnedBufOut, CL_TRUE, CL_MAP_READ, 0, szBuffBytesout, 0, NULL, NULL, &errorNum);
+    
 
+    cmPinnedBufIn2 = clCreateBuffer(cxGPUContext, CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, szBuffBytesout, NULL, &errorNum);
+    cmPinnedBufOut2 = clCreateBuffer(cxGPUContext, CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, szBuffBytesout, NULL, &errorNum);
+    uiInput2 = (cl_uchar *)clEnqueueMapBuffer(commandqueue, cmPinnedBufIn2, CL_TRUE, CL_MAP_WRITE, 0, szBuffBytesout, 0, NULL, NULL, &errorNum);
+    uiOutput2 = (cl_uchar *)clEnqueueMapBuffer(commandqueue, cmPinnedBufOut2, CL_TRUE, CL_MAP_READ, 0, szBuffBytesout, 0, NULL, NULL, &errorNum);
     
+    cmPinnedBufIn3 = clCreateBuffer(cxGPUContext, CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, szBuffBytesout, NULL, &errorNum);
+    cmPinnedBufOut3 = clCreateBuffer(cxGPUContext, CL_MEM_READ_WRITE | CL_MEM_ALLOC_HOST_PTR, szBuffBytesout, NULL, &errorNum);
+    uiInput3 = (cl_uchar *)clEnqueueMapBuffer(commandqueue, cmPinnedBufIn3, CL_TRUE, CL_MAP_WRITE, 0, szBuffBytesout, 0, NULL, NULL, &errorNum);
+    uiOutput3 = (cl_uchar *)clEnqueueMapBuffer(commandqueue, cmPinnedBufOut3, CL_TRUE, CL_MAP_READ, 0, szBuffBytesout, 0, NULL, NULL, &errorNum);
+
+
+
+    if (argc > 1) { 
+        LoadPPM4ub(argv[1], (unsigned char **) &uiInput, &width, &height); 
+    } else { 
+
+    } 
+
+    InitGL(&argc, argv);
+    glutMainLoop();    
     
+    if (argc > 1) {
+
+    } else { 
+        cvReleaseCapture( &capture );   
+    } 
 
     return 0;
-}
-
-
-void SobelOperator() { 
-    
 } 
 
 void InitGL(int* argc, char **argv)
@@ -564,7 +643,6 @@ void DisplayGL()
         Rgb2GrayScale(uiInput, uiOutput);
 
         // Draw processed image
-        std::cout << "Maybe before segfault\n";
         unsigned char * mem = new unsigned char[width * height * 4];
 
         for (unsigned int i = 0; i < width; i++) 
@@ -572,7 +650,7 @@ void DisplayGL()
                 mem[(i * height + j) * 4 + 3] = mem[(i * height + j) * 4 + 1] = mem[(i * height + j) * 4 + 2] = mem[(i * height + j) * 4] = uiOutput[(i * height + j)];                
             }
         glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, mem); 
-        std::cout << "Maybe after segfault\n";
+
         delete mem;
     } else if (iProcFlag == 2) {
 
@@ -580,7 +658,6 @@ void DisplayGL()
         memcpy(uiInput2, uiOutput, szBuffBytesout);
         GrayScale2Bw(uiInput2, uiOutput2,threshold);
 
-        std::cout << "Maybe before segfault\n";
         unsigned char * mem = new unsigned char[width * height * 4];
 
         for (unsigned int i = 0; i < width; i++) 
@@ -588,15 +665,16 @@ void DisplayGL()
                 mem[(i * height + j) * 4 + 3] = mem[(i * height + j) * 4 + 1] = mem[(i * height + j) * 4 + 2] = mem[(i * height + j) * 4] = uiOutput2[(i * height + j)];                
             }
         glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, mem); 
-        std::cout << "Maybe after segfault\n";
         delete mem;
+
     } else if (iProcFlag == 3) {
+
         Rgb2GrayScale(uiInput, uiOutput);
         memcpy(uiInput2, uiOutput, szBuffBytesout);
         GrayScale2Bw(uiInput2, uiOutput2,threshold );
         memcpy(uiInput3, uiOutput2, szBuffBytesout);
         BwFill(uiInput3, uiOutput3); 
-        std::cout << "Maybe before segfault\n";
+
         unsigned char * mem = new unsigned char[width * height * 4];
 
         for (unsigned int i = 0; i < width; i++) 
@@ -605,12 +683,26 @@ void DisplayGL()
                 
             }
         std::cout << sizeof(char); 
-        //         glPixelStorei(GL_PACK_ALIGNMENT, 1);
         glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, mem); 
-        std::cout << "Maybe after segfault\n";
+
         delete mem;
-        }  else  
-    {
+    }  else if (iProcFlag == 4) {
+        Rgb2GrayScale(uiInput, uiOutput);
+        memcpy(uiInput2, uiOutput, szBuffBytesout);
+        GrayScale2Bw(uiInput2, uiOutput2,threshold );
+        memcpy(uiInput3, uiOutput2, szBuffBytesout);
+        BwFit(uiInput3, uiOutput3); 
+
+        unsigned char * mem = new unsigned char[width * height * 4];
+
+        for (unsigned int i = 0; i < width; i++) 
+            for (unsigned int j = 0; j < height; j++) {
+                mem[(i * height + j) * 4 + 3] = mem[(i * height + j) * 4 + 1] = mem[(i * height + j) * 4 + 2] = mem[(i * height + j) * 4] = uiOutput3[(i * height + j)];                
+            }
+        glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, mem); 
+
+        delete mem;
+    } else {
         glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, uiInput); 
     }
 
@@ -634,7 +726,7 @@ void KeyboardGL(unsigned char key, int /*x*/, int /*y*/)
         case 'P':   // P toggles Processing between CPU and GPU
         case 'p':   // p toggles Processing between CPU and GPU
             shrLog("Switching processing on or off\n");
-            iProcFlag = (iProcFlag + 1) % 4;            
+            iProcFlag = (iProcFlag + 1) % 5;            
             break;
         case 't': 
             threshold = (threshold +1) % 256;
