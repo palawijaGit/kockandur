@@ -384,8 +384,7 @@ void GrayScale2Bw(cl_uchar * uiInputImage = NULL, cl_uchar * uiOutputImage = NUL
     errorNum |= clSetKernelArg(ckProba, 1, sizeof(cl_mem), (void*) &cmDevBufOut);
     errorNum |= clSetKernelArg(ckProba, 2, sizeof(cl_uint), (void*) &width);
     errorNum |= clSetKernelArg(ckProba, 3, sizeof(cl_uint), (void*) &height);
-    //    errorNum |= clSetKernelArg(ckProba, 4, sizeof(cl_uint)*(BlockDimX+2)*(BlockDimY+2), NULL);
-    //    errorNum |= clSetkernelArg(ckProba, 5, sizeof(cl_uint), (void*) &localWidth); 
+    errorNum |= clSetKernelArg(ckProba, 4, sizeof(cl_uchar), (void*) &threshold); 
 
     std::cout << "Running processing\n";
     errorNum = 0; 
@@ -570,37 +569,32 @@ void DisplayGL()
 
         for (unsigned int i = 0; i < width; i++) 
             for (unsigned int j = 0; j < height; j++) {
-                mem[(i * height + j) * 4 + 3] = mem[(i * height + j) * 4 + 1] = mem[(i * height + j) * 4 + 2] = mem[(i * height + j) * 4] = uiOutput[(i * height + j)];
-                
+                mem[(i * height + j) * 4 + 3] = mem[(i * height + j) * 4 + 1] = mem[(i * height + j) * 4 + 2] = mem[(i * height + j) * 4] = uiOutput[(i * height + j)];                
             }
-        std::cout << sizeof(char); 
-        //        glPixelStorei(GL_PACK_ALIGNMENT, 1);
-        // glDrawPixels(width, height, GL_RGB, GL_UNSIGNED_INT_8_8_8_8, mem); 
         glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, mem); 
         std::cout << "Maybe after segfault\n";
         delete mem;
     } else if (iProcFlag == 2) {
+
         Rgb2GrayScale(uiInput, uiOutput);
-        memcpy(uiOutput, uiInput2, szBuffBytesout);
-        GrayScale2Bw(uiInput2, uiOutput2,threshold );
+        memcpy(uiInput2, uiOutput, szBuffBytesout);
+        GrayScale2Bw(uiInput2, uiOutput2,threshold);
+
         std::cout << "Maybe before segfault\n";
         unsigned char * mem = new unsigned char[width * height * 4];
 
         for (unsigned int i = 0; i < width; i++) 
             for (unsigned int j = 0; j < height; j++) {
-                mem[(i * height + j) * 4 + 3] = mem[(i * height + j) * 4 + 1] = mem[(i * height + j) * 4 + 2] = mem[(i * height + j) * 4] = uiOutput2[(i * height + j)];
-                
+                mem[(i * height + j) * 4 + 3] = mem[(i * height + j) * 4 + 1] = mem[(i * height + j) * 4 + 2] = mem[(i * height + j) * 4] = uiOutput2[(i * height + j)];                
             }
-        std::cout << sizeof(char); 
-        //         glPixelStorei(GL_PACK_ALIGNMENT, 1);
         glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, mem); 
         std::cout << "Maybe after segfault\n";
         delete mem;
     } else if (iProcFlag == 3) {
         Rgb2GrayScale(uiInput, uiOutput);
-        memcpy(uiOutput, uiInput2, szBuffBytesout);
+        memcpy(uiInput2, uiOutput, szBuffBytesout);
         GrayScale2Bw(uiInput2, uiOutput2,threshold );
-        memcpy(uiOutput2, uiInput3, szBuffBytesout);
+        memcpy(uiInput3, uiOutput2, szBuffBytesout);
         BwFill(uiInput3, uiOutput3); 
         std::cout << "Maybe before segfault\n";
         unsigned char * mem = new unsigned char[width * height * 4];
@@ -615,7 +609,7 @@ void DisplayGL()
         glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, mem); 
         std::cout << "Maybe after segfault\n";
         delete mem;
-        } else  
+        }  else  
     {
         glDrawPixels(width, height, GL_RGBA, GL_UNSIGNED_BYTE, uiInput); 
     }

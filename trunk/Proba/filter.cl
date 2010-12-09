@@ -99,7 +99,7 @@ __kernel void MorphFit(__global const uchar * in,
               temp &= localData[LocalMemOffset];
               temp &= localData[LocalMemOffset + 1];
               temp &= localData[LocalMemOffset + 2];
-              LocalMemOFfset += localWidth + 2;
+              LocalMemOffset += localWidth + 2;
               temp &= localData[LocalMemOffset]; 
 
               out[LocalMemOffset] = temp;
