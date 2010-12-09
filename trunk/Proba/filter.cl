@@ -19,22 +19,42 @@ __kernel void MorphFill(__global const float * in,
               out[index] = in[index];
 } 
 
-__kernel void MorphFit(__global const uchar4 * in, 
+/* __kernel void MorphFit(__global const uchar4 * in, 
                             __global uchar4 * out,
                             unsigned int imageWidth, 
                             unsigned int imageHeight) { 
 
               // Block index
               int bx  = get_global_id(0); 
-              int by  = get_global_id(1);
+              int by  = get_global_id(1) -1;
+
+              int lx = get_local_id(0); 
+              int ly = get_local_id(1);              
 
               int memoffset = mul24(by, (int) get_global_size(0)) + bx;
 
+              if((by >= 0) && (by < imageHeight) && (bx < imageWidth))
+                  {
+                      uc4LocalData[iLocalPixOffset] = uc4Source[iDevGMEMOffset];
+                  }
+              else 
+                  {
+                      uc4LocalData[iLocalPixOffset] = (uchar4)0; 
+                  }
+              
+              barrier(CLK_LOCAL_MEM_FENCE);
+
+              // mas mas strukturalo elem de a memoriamasolas ugyanaz kell legyen :-)
+#ifdef DISK_KERNEL
+              out[index] = in[index] 
+#else 
+
+#endif            
               out[index] = in[index];
-}
+} */
 
 __kernel void Rgb2GrayScale(__global const uchar4 * in, 
-                            __global uchar4 * out,
+                            __global uchar * out,
                             unsigned int imageWidth, 
                             unsigned int imageHeight) 
 { 
@@ -42,7 +62,8 @@ __kernel void Rgb2GrayScale(__global const uchar4 * in,
               int bx  = get_global_id(0); 
               int by  = get_global_id(1);
 
-              int memoffset = mul24(by, (int) get_global_size(0)) + bx;
+              //              int memoffset = mul24(by, (int) get_global_size(0)) + bx;
+              int memoffset = mul24(by, (int) imageWidth) + bx;
 
               if((by >= imageHeight) || (bx >= imageWidth))
               {
@@ -53,28 +74,30 @@ __kernel void Rgb2GrayScale(__global const uchar4 * in,
                       (float) in[memoffset].y * 0.59f + 
                       (float) in[memoffset].z * 0.11f;                                        
                   
-                  unsigned int uiPackedPix = 0x00000000;
-                  uiPackedPix |= 0x000000FF & (((unsigned int)v));
-                  uiPackedPix |= 0x0000FF00 & (((unsigned int)v) << 8);
-                  uiPackedPix |= 0x00FF0000 & (((unsigned int)v) << 16);
-//                  uiPackedPix |= 0xFF000000 & (((unsigned int)v) << 24);                  
+                  unsigned char uiPackedPix = 0x00;
+                  uiPackedPix |= 0xFF & (((unsigned int)v));
                   out[memoffset] = uiPackedPix;
               }
 }
 
-__kernel void GrayScale2BW(__global const float * in, 
-              __global       float * out) { 
+__kernel void GrayScale2BW(__global const uchar * in, 
+                           __global uchar * out,
+                           unsigned int imageWidth, 
+                           unsigned int imageHeight, 
+                           unsigned char threshold) { 
 
-              // Block index
-              int bx  = get_group_id(0); 
-              int by  = get_group_id(1);
+              int bx  = get_global_id(0); 
+              int by  = get_global_id(1);
 
-              // Thread index 
-              
-              int tx = get_local_id(0); 
-              int ty = get_local_id(1);
+              int memoffset = mul24(by, (int) get_global_size(0)) + bx;
 
-              int index = bx * 10 + by;
-
-              out[index] = in[index];
-}
+              if((by >= imageHeight) || (bx >= imageWidth))
+              {
+                  return;
+              } else {                                     
+                  if (in[memoffset] > threshold) 
+                      out[memoffset] = 0xFF;
+                  else 
+                      out[memoffset] = 0x00;
+              }
+} 
