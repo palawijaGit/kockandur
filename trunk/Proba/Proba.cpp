@@ -601,7 +601,7 @@ void DisplayGL()
         memcpy(uiOutput, uiInput2, szBuffBytesout);
         GrayScale2Bw(uiInput2, uiOutput2,threshold );
         memcpy(uiOutput2, uiInput3, szBuffBytesout);
-        BwFill(uiOutput3, uiInput3); 
+        BwFill(uiInput3, uiOutput3); 
         std::cout << "Maybe before segfault\n";
         unsigned char * mem = new unsigned char[width * height * 4];
 

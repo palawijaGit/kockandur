@@ -38,30 +38,33 @@ __kernel void MorphFit(__global const uchar * in,
                   localData[LocalMemOffset] = 0;
               } 
 
+              // also ketto bemasolja a legutolso 2 sort is
               if (get_local_id(1) < 2) {
                   LocalMemOffset += mul24((int) get_local_size(1), localWidth);
                   if (((by +  get_local_size(1)) < imageHeight) && (bx < imageWidth))
                       localData[LocalMemOffset] = in[GlobalMemOffset + mul24(get_local_size(1), imageWidth)];
                   else 
-                      localData[LocalMemOffset] = 0;
+                      localData[LocalMemOffset] = (uchar) 0;
               }
 
+              // jobb szele
               if (get_local_id(0) == (get_local_size(0) -1)) {
 
                   LocalMemOffset = mul24((int) get_local_id(1), localWidth);
-                  if ((bx >= 0) && (bx < imageHeight) && (get_group_id(0) > 0))
-                      localData[LocalMemOffset] = in[mul24(by, (int) get_global_size(0)) + 
-                                                     mul24(get_group_id(0), get_local_size(0)) -1];
+                  if ((by >= 0) && (by < imageHeight) && (get_group_id(0) > 0))
+                      localData[LocalMemOffset] = in[mul24(by, (int) imageWidth) + 
+                                                     mul24(get_group_id(0), imageWidth) -1];
                   else 
-                      localData[LocalMemOffset] = 0;
+                      localData[LocalMemOffset] = (uchar) 0;
 
+                  // also ket sor a blokkban
                   if(get_local_id(1) < 2) {
                       LocalMemOffset += mul24((int) get_local_size(1), localWidth);
 
                       if (((by +  get_local_size(1)) < imageHeight) && (get_group_id(0) > 0))
-                          localData[LocalMemOffset] = in[mul24((by + (int) get_global_size(1)), (int) get_global_size(0)) + mul24(get_group_id(0), get_local_size(0)) -1];
+                          localData[LocalMemOffset] = in[mul24((by + (int) get_local_size(1)), (int) imageWidth) + mul24(get_group_id(0), get_local_size(0)) -1];
                       else 
-                          localData[LocalMemOffset] = 0;
+                          localData[LocalMemOffset] = (uchar) 0;
                   } 
               } else if (get_local_id(0) == 0) {
                   LocalMemOffset = mul24(((int) get_local_id(1) + 1), localWidth) - 1;
@@ -70,6 +73,8 @@ __kernel void MorphFit(__global const uchar * in,
                   } else { 
                       localData[LocalMemOffset] = 0;
                   }
+
+
                   if (get_local_id(1) < 2) {
                       LocalMemOffset += mul24((int) get_local_size(1), localWidth);
                       if (((by + get_local_size(1)) < imageHeight) && (mul24((get_group_id(0) +1), get_local_size(0)) < imageWidth)) {
@@ -88,11 +93,16 @@ __kernel void MorphFit(__global const uchar * in,
 
               // mas mas strukturalo elem de a memoriamasolas ugyanaz kell legyen :-)
               // #ifdef DISK_KERNEL
-              out[LocalMemOffset] = localData[LocalMemOffset + 1 ] & 
-                           localData[LocalMemOffset + localWidth] &
-                           localData[LocalMemOffset + localWidth+ 1] &
-                           localData[LocalMemOffset + localWidth+ 2] &
-                           localData[LocalMemOffset + (localWidth << 2) + 1]; 
+              unsigned int temp = 0xFF; 
+              temp &= localData[LocalMemOffset + 1];  
+              LocalMemOffset += localWidth - 1;
+              temp &= localData[LocalMemOffset];
+              temp &= localData[LocalMemOffset + 1];
+              temp &= localData[LocalMemOffset + 2];
+              LocalMemOFfset += localWidth + 2;
+              temp &= localData[LocalMemOffset]; 
+
+              out[LocalMemOffset] = temp;
               // #else 
              // #endif         
 }
